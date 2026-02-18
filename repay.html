@@ -124,20 +124,16 @@ Repay on time to improve your credit score and qualify for higher loan limits.
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
+// Hardcoded customer info
+const name = "Mara";
+const email = "mara@gmail.com";
+const amount = 350;
+const due = "2026-03-10";
+const overdue = 3;
 
-const name = params.get("name");
-const email = params.get("email");
-const amount = params.get("amount");
-const due = params.get("due");
-const overdue = params.get("overdue");
-
-if(!amount || !email){
-    alert("Invalid payment link.");
-}
-
+// Fill the HTML elements
 document.getElementById("customerName").innerText = name;
-document.getElementById("amountDisplay").innerText = parseFloat(amount).toFixed(2);
+document.getElementById("amountDisplay").innerText = amount.toFixed(2);
 document.getElementById("dueDate").innerText = due;
 document.getElementById("overdueDisplay").innerText = "Overdue: " + overdue + " days";
 
