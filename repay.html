@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASPAL & TapLoan - Secure Repayment</title>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<style>
+*{box-sizing:border-box;}
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+    background:#f2f6fb;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(135deg,#1f6fd6,#4da3ff);
+    color:white;
+    padding:45px 20px 35px 20px;
+    text-align:center;
+}
+.brand{font-size:18px;opacity:0.9;}
+.amount{font-size:52px;font-weight:700;margin:12px 0 5px 0;}
+.subtext{font-size:14px;opacity:0.9;}
+.badge{
+    display:inline-block;
+    margin-top:15px;
+    padding:6px 14px;
+    background:#ff4d4f;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+.extend{
+    margin-top:18px;
+    background:#ffb020;
+    border:none;
+    padding:12px 28px;
+    border-radius:8px;
+    font-weight:600;
+    color:white;
+}
+
+/* CARDS */
+.card{
+    background:white;
+    margin:18px;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+}
+.card-title{font-weight:600;margin-bottom:12px;}
+.row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    margin-top:6px;
+}
+.repay-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.repay-btn{
+    background:#1f6fd6;
+    border:none;
+    padding:11px 20px;
+    border-radius:8px;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+.footer{
+    font-size:12px;
+    color:#666;
+    margin:18px;
+    line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="brand">CASPAL & TapLoan</div>
+    <div class="amount" id="amountDisplay">0.00</div>
+    <div class="subtext">Repayment Amount (GHS)</div>
+    <div class="badge" id="overdueDisplay">Overdue</div>
+    <br>
+    <button class="extend">Extend Your Loan</button>
+</div>
+
+<div class="card">
+    <div class="card-title">Loan Details</div>
+    <div class="row">
+        <span>Customer</span>
+        <span id="customerName">--</span>
+    </div>
+    <div class="row">
+        <span>Due Date</span>
+        <span id="dueDate">--</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="row">
+        <span>Coupon</span>
+        <span>No coupon applied</span>
+    </div>
+</div>
+
+<div class="card repay-box">
+    <div>
+        <strong>Repay Online</strong><br>
+        <span style="color:#e53935;font-size:13px;">Full repayment required</span>
+    </div>
+    <button class="repay-btn" onclick="payNow()">Repay</button>
+</div>
+
+<div class="footer">
+Repay on time to improve your credit score and qualify for higher loan limits.
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const name = params.get("name");
+const email = params.get("email");
+const amount = params.get("amount");
+const due = params.get("due");
+const overdue = params.get("overdue");
+
+if(!amount || !email){
+    alert("Invalid payment link.");
+}
+
+document.getElementById("customerName").innerText = name;
+document.getElementById("amountDisplay").innerText = parseFloat(amount).toFixed(2);
+document.getElementById("dueDate").innerText = due;
+document.getElementById("overdueDisplay").innerText = "Overdue: " + overdue + " days";
+
+function payNow(){
+    var handler = PaystackPop.setup({
+        key: 'YOUR_PAYSTACK_PUBLIC_KEY',
+        email: email,
+        amount: amount * 100,
+        currency: "GHS",
+        ref: "CP" + Math.floor((Math.random() * 1000000000) + 1),
+        callback: function(response){
+            window.location.href = "success.html?ref=" + response.reference +
+            "&amount=" + amount +
+            "&name=" + name;
+        },
+        onClose: function(){
+            alert("Payment cancelled.");
+        }
+    });
+    handler.openIframe();
+}
+</script>
+
+</body>
+</html>
